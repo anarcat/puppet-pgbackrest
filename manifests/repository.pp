@@ -41,6 +41,7 @@ class pgbackrest::repository (
         <%= $key -%>=<%= $value %>
         <%- } -%>
         FixedRandomDelay=true
+        Persistent=true
 
         [Install]
         WantedBy=timers.target
