@@ -12,6 +12,7 @@ class pgbackrest::repository (
     $base_directory,
     "${base_directory}/archive",
     '/var/lock/pgbackrest',
+    '/var/log/pgbackrest',
   ]:
     ensure => directory,
     # make directory only "executable", to restrict enumeration of
