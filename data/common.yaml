@@ -12,8 +12,11 @@ pgbackrest::config:
 
 pgbackrest::repository::schedules:
   full:
+    OnCalendar: "monthly"
+    RandomizedDelaySec: "30d"
+  diff:
     OnCalendar: "weekly"
     RandomizedDelaySec: "7d"
-  diff:
+  incr:
     OnCalendar: "daily"
     RandomizedDelaySec: "24h"
