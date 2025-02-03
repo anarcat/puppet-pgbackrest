@@ -74,17 +74,13 @@ define pgbackrest::repository::stanza(
   # find back the username, we assume we're provided with a username that respect the prefix
   $shortname = regsubst($username, '^pgbackrest-', '')
   $kinds.each | $kind | {
-    # this is not a systemd::unit_file because that seems buggy and
-    # never converges
-    file { "/etc/systemd/system/pgbackrest-backup-${kind}@${shortname}.service":
-      ensure => 'link',
-      target => "pgbackrest-backup-${kind}@.service",
-      notify => Class['systemd::systemctl::daemon_reload'],
+    service { "pgbackrest-backup-${kind}@${shortname}.service":
+      ensure => false,
+      enable => false,
     }
-    systemd::unit_file { "pgbackrest-backup-${kind}@${shortname}.timer":
+    service { "pgbackrest-backup-${kind}@${shortname}.timer":
+      ensure => true,
       enable => true,
-      active => true,
-      target => "/etc/systemd/system/pgbackrest-backup-${kind}@.timer",
     }
   }
   if $pgbackrest::repository::manage_ssh {
