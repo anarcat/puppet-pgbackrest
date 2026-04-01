@@ -8,9 +8,10 @@ class pgbackrest::client(
   Stdlib::Fqdn $stanza_name = $facts['networking']['fqdn'],
   String[1] $unix_user = "pgbackrest-${$facts['networking']['hostname']}",
   String[1] $pg_user = 'postgres',
+  String[1] $pg_home = '/var/lib/postgresql',
   Integer $pg_cluster_version = 15,
   String[1] $pg_cluster_name = 'main',
-  String[1] $pg_cluster_path = "/var/lib/postgresql/${pg_cluster_version}/${pg_cluster_name}",
+  String[1] $pg_cluster_path = "${pg_home}/${pg_cluster_version}/${pg_cluster_name}",
   Boolean $manage_ssh = true,
   PgBackRest::Schedule $schedules,
 ) {
@@ -22,12 +23,15 @@ class pgbackrest::client(
         schedules          => $schedules,
         username           => $unix_user,
         tag                => $server_collect_tag,
+        pg_home            => $pg_home,
         pg_cluster_version => $pg_cluster_version,
         ssh_key_params     => $facts['ssh_keys_users'][$pg_user]['id_rsa.pub'],
       }
     } else {
-      # XXX: assumes pg_user exists
-      ssh_keygen { $pg_user: }
+      ssh_keygen { $pg_user:
+        home    => $pg_home,
+        require => Class['postgresql::server'],
+      }
     }
     # authorize the repository's SSH keys to connect to this server to
     # pull full backups

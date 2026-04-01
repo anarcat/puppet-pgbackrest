@@ -20,8 +20,9 @@ define pgbackrest::repository::stanza(
   PgBackRest::Schedule $schedules,
   Integer $pg_cluster_version = 15,
   String $username = "pgbackrest-${name}",
+  String[1] $pg_home = '/var/lib/postgresql',
   String[1] $pg_cluster_name = 'main',
-  String[1] $pg_cluster_path = "/var/lib/postgresql/${pg_cluster_version}/${pg_cluster_name}",
+  String[1] $pg_cluster_path = "${pg_home}/${pg_cluster_version}/${pg_cluster_name}",
   Hash $ssh_key_params = {},
 ) {
   # create the config file for the stanza
